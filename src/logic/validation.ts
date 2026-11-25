@@ -10,10 +10,19 @@ export interface ValidationError {
 export function validateTask(input: UserInput): ValidationError[] {
   const errors: ValidationError[] = []
 
-  if (input.title.trim() === '') {
+  const title = input.title.trim()
+
+  if (title === '') {
     errors.push({
       field: 'title',
       message: 'Title cannot be empty.',
+    })
+  }
+
+  if (title.length > 100) {
+    errors.push({
+      field: 'title',
+      message: 'Title cannot exceed 100 characters.',
     })
   }
 
