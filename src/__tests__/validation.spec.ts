@@ -1,17 +1,21 @@
 import { describe, expect, it } from 'vitest'
-import { validateTask } from '@/logic/validation'
+import { validateTask, type UserInput } from '@/logic/validation'
+
+function makeInput(overrides?: Partial<UserInput>): UserInput {
+  const input: UserInput = {
+    subject: 'Chemistry',
+    title: 'Homework 1',
+    dueDate: '2026-11-25',
+    type: 'homework',
+    isCompleted: false,
+  }
+
+  return { ...input, ...overrides }
+}
 
 describe('task', () => {
   it('with empty title returns a single error for the field "title"', () => {
-    expect(
-      validateTask({
-        subject: 'Math',
-        title: '',
-        dueDate: '2026-11-25',
-        type: 'homework',
-        isCompleted: false,
-      }),
-    ).toEqual([
+    expect(validateTask(makeInput({ title: '' }))).toEqual([
       {
         field: 'title',
         message: 'Title cannot be empty.',
@@ -20,15 +24,7 @@ describe('task', () => {
   })
 
   it('with whitespace title returns a single error for the field "title"', () => {
-    expect(
-      validateTask({
-        subject: 'Math',
-        title: '   ',
-        dueDate: '2026-11-25',
-        type: 'homework',
-        isCompleted: false,
-      }),
-    ).toEqual([
+    expect(validateTask(makeInput({ title: '   ' }))).toEqual([
       {
         field: 'title',
         message: 'Title cannot be empty.',
@@ -36,52 +32,20 @@ describe('task', () => {
     ])
   })
 
-  it('with title "Homework 1" returns an empty array', () => {
-    expect(
-      validateTask({
-        subject: 'Math',
-        title: 'Homework 1',
-        dueDate: '2026-11-25',
-        type: 'homework',
-        isCompleted: false,
-      }),
-    ).toEqual([])
+  it('with valid title returns an empty array', () => {
+    expect(validateTask(makeInput())).toEqual([])
   })
 
-  it('with title "Chemistry lab report" returns an empty array', () => {
-    expect(
-      validateTask({
-        subject: 'Math',
-        title: 'Chemistry lab report',
-        dueDate: '2026-11-25',
-        type: 'homework',
-        isCompleted: false,
-      }),
-    ).toEqual([])
+  it('with a different valid title returns an empty array', () => {
+    expect(validateTask(makeInput({ title: 'Chemistry lab report' }))).toEqual([])
   })
 
   it('with a 100 character title returns an empty array', () => {
-    expect(
-      validateTask({
-        subject: 'Math',
-        title: 'A'.repeat(100),
-        dueDate: '2026-11-25',
-        type: 'homework',
-        isCompleted: false,
-      }),
-    ).toEqual([])
+    expect(validateTask(makeInput({ title: 'A'.repeat(100) }))).toEqual([])
   })
 
   it('with a 101 character title returns an error for the field "title"', () => {
-    expect(
-      validateTask({
-        subject: 'Math',
-        title: 'A'.repeat(101),
-        dueDate: '2026-11-25',
-        type: 'homework',
-        isCompleted: false,
-      }),
-    ).toEqual([
+    expect(validateTask(makeInput({ title: 'A'.repeat(101) }))).toEqual([
       {
         field: 'title',
         message: 'Title cannot exceed 100 characters.',
