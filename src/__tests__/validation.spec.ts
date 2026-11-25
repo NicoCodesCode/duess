@@ -17,7 +17,9 @@ describe('task', () => {
         message: 'Title cannot be empty.',
       },
     ])
+  })
 
+  it('with whitespace title returns a single error for the field "title"', () => {
     expect(
       validateTask({
         subject: 'Math',
