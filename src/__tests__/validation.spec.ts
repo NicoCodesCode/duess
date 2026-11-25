@@ -17,6 +17,21 @@ describe('task', () => {
         message: 'Title cannot be empty.',
       },
     ])
+
+    expect(
+      validateTask({
+        subject: 'Math',
+        title: '   ',
+        dueDate: '2026-11-25',
+        type: 'homework',
+        isCompleted: false,
+      }),
+    ).toEqual([
+      {
+        field: 'title',
+        message: 'Title cannot be empty.',
+      },
+    ])
   })
 
   it('with title "Homework 1" returns an empty array', () => {
