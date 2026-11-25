@@ -7,22 +7,31 @@ export interface ValidationError {
   message: string
 }
 
+const TEXT_FIELD_MAX_LENGTH = 100
+
 export function validateTask(input: UserInput): ValidationError[] {
   const errors: ValidationError[] = []
+  errors.push(...validateText('title', input.title), ...validateText('subject', input.subject))
+  return errors
+}
 
-  const title = input.title.trim()
+function validateText(field: 'title' | 'subject', value: string): ValidationError[] {
+  const errors: ValidationError[] = []
 
-  if (title === '') {
+  const trimmedValue = value.trim()
+  const capitalizedField = field.charAt(0).toUpperCase() + field.slice(1)
+
+  if (trimmedValue === '') {
     errors.push({
-      field: 'title',
-      message: 'Title cannot be empty.',
+      field,
+      message: `${capitalizedField} cannot be empty.`,
     })
   }
 
-  if (title.length > 100) {
+  if (trimmedValue.length > TEXT_FIELD_MAX_LENGTH) {
     errors.push({
-      field: 'title',
-      message: 'Title cannot exceed 100 characters.',
+      field,
+      message: `${capitalizedField} cannot exceed ${TEXT_FIELD_MAX_LENGTH} characters.`,
     })
   }
 
