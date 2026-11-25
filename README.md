@@ -1,54 +1,68 @@
-# duess
+# Duess
 
-This template should help get you started developing with Vue 3 in Vite.
+A small, mobile-first app that helps students keep track of what's due: homework, projects, exams, and more.
 
-## Recommended IDE Setup
+> **Status:** early development. The core app is being built; nothing is deployed yet.
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Why
 
-## Recommended Browser Setup
+Deadlines are easy to forget and hard to organize across subjects. Duess lets a student add a task in seconds, right from their phone, and see everything sorted by due date.
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+## Features
 
-## Type Support for `.vue` Imports in TS
+Each task has a subject, a title (e.g. "Chemistry homework"), a due date, a type, and a completion status.
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+**Planned**
 
-## Customize configuration
+- [ ] Add, edit, delete, and complete tasks
+- [ ] Sort by due date, group by subject, hide completed
+- [ ] Overdue highlighting
+- [ ] Installable PWA that works offline
+- [ ] Smart quick entry (type a short phrase, get a structured task)
+- [ ] JSON export/import
+- [ ] Optional sync across devices (FastAPI backend)
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+## Design: local-first, sync later
 
-## Project Setup
+Your data lives on your device, in the browser's IndexedDB. There are no accounts, no server, and no cost, and the app works without a connection. Optional multi-device sync is planned as a later phase, and the data model is designed with that in mind.
+
+## Tech stack
+
+- [Vue 3](https://vuejs.org/) + TypeScript + [Vite](https://vite.dev/)
+- [Dexie](https://dexie.org/) for IndexedDB storage (planned)
+- [vite-plugin-pwa](https://vite-pwa-org.netlify.app/) for the manifest and service worker (planned)
+- [Vitest](https://vitest.dev/) for tests, ESLint and Prettier for code quality
+- FastAPI + SQL for the sync backend (planned)
+
+## Getting started
+
+Requirements: Node.js `^22.18.0` or `>=24.12.0` (v23 is unsupported) and [pnpm](https://pnpm.io/).
 
 ```sh
+git clone https://github.com/NicoCodesCode/duess.git
+cd duess
 pnpm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
 pnpm dev
 ```
 
-### Type-Check, Compile and Minify for Production
+Other scripts are listed in `package.json`.
 
-```sh
-pnpm build
-```
+## Roadmap
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+1. Repo foundations and tooling
+2. Task data model and validation
+3. Storage layer
+4. Core logic (sorting, grouping, overdue)
+5. Mobile UI
+6. PWA layer and deployment
+7. Smart quick-entry parser
+8. Export/import
+9. Sync backend
 
-```sh
-pnpm test:unit
-```
+## Contributing
 
-### Lint with [ESLint](https://eslint.org/)
+Contributions and ideas are welcome. Please open an issue first for larger changes. Commits follow [Conventional Commits](https://www.conventionalcommits.org/).
 
-```sh
-pnpm lint
-```
+## License
+
+[MIT](LICENSE)
