@@ -12,7 +12,20 @@ const TEXT_FIELD_MAX_LENGTH = 100
 export function validateTask(input: UserInput): ValidationError[] {
   const errors: ValidationError[] = []
 
-  errors.push(...validateText('title', input.title), ...validateText('subject', input.subject))
+  const titleValidationErrors = validateText('title', input.title)
+  if (titleValidationErrors) {
+    errors.push(titleValidationErrors)
+  }
+
+  const subjectValidationErrors = validateText('subject', input.subject)
+  if (subjectValidationErrors) {
+    errors.push(subjectValidationErrors)
+  }
+
+  const dateValidationErrors = validateDate(input.dueDate)
+  if (dateValidationErrors) {
+    errors.push(dateValidationErrors)
+  }
 
   if (!isTaskType(input.type)) {
     errors.push({
@@ -21,35 +34,28 @@ export function validateTask(input: UserInput): ValidationError[] {
     })
   }
 
-  const dateValidationErrors = validateDate(input.dueDate)
-  if (dateValidationErrors) {
-    errors.push(dateValidationErrors)
-  }
-
   return errors
 }
 
-function validateText(field: 'title' | 'subject', value: string): ValidationError[] {
-  const errors: ValidationError[] = []
-
+function validateText(field: 'title' | 'subject', value: string): ValidationError | null {
   const trimmedValue = value.trim()
   const capitalizedField = field.charAt(0).toUpperCase() + field.slice(1)
 
   if (trimmedValue === '') {
-    errors.push({
+    return {
       field,
       message: `${capitalizedField} cannot be empty.`,
-    })
+    }
   }
 
   if (trimmedValue.length > TEXT_FIELD_MAX_LENGTH) {
-    errors.push({
+    return {
       field,
       message: `${capitalizedField} cannot exceed ${TEXT_FIELD_MAX_LENGTH} characters.`,
-    })
+    }
   }
 
-  return errors
+  return null
 }
 
 function validateDate(date: string): ValidationError | null {
