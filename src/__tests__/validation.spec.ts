@@ -14,85 +14,89 @@ function makeInput(overrides?: Partial<UserInput>): UserInput {
   return { ...input, ...overrides }
 }
 
-describe('task', () => {
-  // title tests
-  it('with valid input returns an empty array', () => {
+describe('validateTask', () => {
+  it('valid input returns an empty array', () => {
     expect(validateTask(makeInput())).toEqual([])
   })
 
-  it('with empty title returns a single error for the field "title"', () => {
-    expect(validateTask(makeInput({ title: '' }))).toEqual([
-      {
-        field: 'title',
-        message: 'Title cannot be empty.',
-      },
-    ])
+  describe('title', () => {
+    it('is empty and returns a single error for the field "title"', () => {
+      expect(validateTask(makeInput({ title: '' }))).toEqual([
+        {
+          field: 'title',
+          message: 'Title cannot be empty.',
+        },
+      ])
+    })
+
+    it('is whitespace-only and returns a single error for the field "title"', () => {
+      expect(validateTask(makeInput({ title: '   ' }))).toEqual([
+        {
+          field: 'title',
+          message: 'Title cannot be empty.',
+        },
+      ])
+    })
+
+    it('is within the maximum length and returns an empty array', () => {
+      expect(validateTask(makeInput({ title: 'A'.repeat(100) }))).toEqual([])
+    })
+
+    it('exceeds the maximum length and returns an error for the field "title"', () => {
+      expect(validateTask(makeInput({ title: 'A'.repeat(101) }))).toEqual([
+        {
+          field: 'title',
+          message: 'Title cannot exceed 100 characters.',
+        },
+      ])
+    })
   })
 
-  it('with whitespace title returns a single error for the field "title"', () => {
-    expect(validateTask(makeInput({ title: '   ' }))).toEqual([
-      {
-        field: 'title',
-        message: 'Title cannot be empty.',
-      },
-    ])
+  describe('subject', () => {
+    it('is empty and returns a single error for the field "subject"', () => {
+      expect(validateTask(makeInput({ subject: '' }))).toEqual([
+        {
+          field: 'subject',
+          message: 'Subject cannot be empty.',
+        },
+      ])
+    })
+
+    it('is whitespace-only and returns a single error for the field "subject"', () => {
+      expect(validateTask(makeInput({ subject: '   ' }))).toEqual([
+        {
+          field: 'subject',
+          message: 'Subject cannot be empty.',
+        },
+      ])
+    })
+
+    it('is within the maximum length and returns an empty array', () => {
+      expect(validateTask(makeInput({ subject: 'A'.repeat(100) }))).toEqual([])
+    })
+
+    it('exceeds the maximum length and returns an error for the field "subject"', () => {
+      expect(validateTask(makeInput({ subject: 'A'.repeat(101) }))).toEqual([
+        {
+          field: 'subject',
+          message: 'Subject cannot exceed 100 characters.',
+        },
+      ])
+    })
   })
 
-  it('with a 100 character title returns an empty array', () => {
-    expect(validateTask(makeInput({ title: 'A'.repeat(100) }))).toEqual([])
-  })
+  describe('type', () => {
+    it('is invalid and returns a single error for the field "type"', () => {
+      expect(validateTask(makeInput({ type: 'banana' as UserInput['type'] }))).toEqual([
+        {
+          field: 'type',
+          message: `Type must be a valid task type (${TASK_TYPES.join(', ')}).`,
+        },
+      ])
+    })
 
-  it('with a 101 character title returns an error for the field "title"', () => {
-    expect(validateTask(makeInput({ title: 'A'.repeat(101) }))).toEqual([
-      {
-        field: 'title',
-        message: 'Title cannot exceed 100 characters.',
-      },
-    ])
-  })
-
-  // subject tests
-  it('with empty subject returns a single error for the field "subject"', () => {
-    expect(validateTask(makeInput({ subject: '' }))).toEqual([
-      {
-        field: 'subject',
-        message: 'Subject cannot be empty.',
-      },
-    ])
-  })
-
-  it('with whitespace subject returns a single error for the field "subject"', () => {
-    expect(validateTask(makeInput({ subject: '   ' }))).toEqual([
-      {
-        field: 'subject',
-        message: 'Subject cannot be empty.',
-      },
-    ])
-  })
-
-  it('with a 100 character subject returns an empty array', () => {
-    expect(validateTask(makeInput({ subject: 'A'.repeat(100) }))).toEqual([])
-  })
-
-  it('with a 101 character subject returns an error for the field "subject"', () => {
-    expect(validateTask(makeInput({ subject: 'A'.repeat(101) }))).toEqual([
-      {
-        field: 'subject',
-        message: 'Subject cannot exceed 100 characters.',
-      },
-    ])
-  })
-
-  it('with invalid type returns a single error for the field "type"', () => {
-    expect(validateTask(makeInput({ type: 'banana' as UserInput['type'] }))).toEqual([
-      {
-        field: 'type',
-        message: `Type must be a valid task type (${TASK_TYPES.join(', ')}).`,
-      },
-    ])
-  })
-
-  it.each(TASK_TYPES)('with valid type "%s" returns an empty array', (type) => {
-    expect(validateTask(makeInput({ type }))).toEqual([])
+    it.each(TASK_TYPES)('is valid type "%s" and returns an empty array', (type) => {
+      expect(validateTask(makeInput({ type }))).toEqual([])
+    })
   })
 })
