@@ -12,19 +12,19 @@ const TEXT_FIELD_MAX_LENGTH = 100
 export function validateTask(input: UserInput): ValidationError[] {
   const errors: ValidationError[] = []
 
-  const titleValidationErrors = validateText('title', input.title)
-  if (titleValidationErrors) {
-    errors.push(titleValidationErrors)
+  const titleError = validateText('title', input.title)
+  if (titleError) {
+    errors.push(titleError)
   }
 
-  const subjectValidationErrors = validateText('subject', input.subject)
-  if (subjectValidationErrors) {
-    errors.push(subjectValidationErrors)
+  const subjectError = validateText('subject', input.subject)
+  if (subjectError) {
+    errors.push(subjectError)
   }
 
-  const dateValidationErrors = validateDate(input.dueDate)
-  if (dateValidationErrors) {
-    errors.push(dateValidationErrors)
+  const dateError = validateDate(input.dueDate)
+  if (dateError) {
+    errors.push(dateError)
   }
 
   if (!isTaskType(input.type)) {
