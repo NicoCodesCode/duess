@@ -99,4 +99,42 @@ describe('validateTask', () => {
       expect(validateTask(makeInput({ type }))).toEqual([])
     })
   })
+
+  describe('dueDate', () => {
+    it('is empty and returns a single error for the field "dueDate"', () => {
+      expect(validateTask(makeInput({ dueDate: '' }))).toEqual([
+        {
+          field: 'dueDate',
+          message: 'Due date cannot be empty.',
+        },
+      ])
+    })
+
+    it('is "friday" and returns a single error for the field "dueDate"', () => {
+      expect(validateTask(makeInput({ dueDate: 'friday' }))).toEqual([
+        {
+          field: 'dueDate',
+          message: 'Due date must be in the format YYYY-MM-DD.',
+        },
+      ])
+    })
+
+    it('is "2026-1-5" and returns a single error for the field "dueDate"', () => {
+      expect(validateTask(makeInput({ dueDate: '2026-1-5' }))).toEqual([
+        {
+          field: 'dueDate',
+          message: 'Due date must be in the format YYYY-MM-DD.',
+        },
+      ])
+    })
+
+    it('is "2026-11-25abc" and returns a single error for the field "dueDate"', () => {
+      expect(validateTask(makeInput({ dueDate: '2026-11-25abc' }))).toEqual([
+        {
+          field: 'dueDate',
+          message: 'Due date must be in the format YYYY-MM-DD.',
+        },
+      ])
+    })
+  })
 })

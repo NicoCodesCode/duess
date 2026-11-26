@@ -13,6 +13,7 @@ export function validateTask(input: UserInput): ValidationError[] {
   const errors: ValidationError[] = []
 
   errors.push(...validateText('title', input.title), ...validateText('subject', input.subject))
+  errors.push(...validateDate(input.dueDate))
 
   if (!isTaskType(input.type)) {
     errors.push({
@@ -41,6 +42,29 @@ function validateText(field: 'title' | 'subject', value: string): ValidationErro
     errors.push({
       field,
       message: `${capitalizedField} cannot exceed ${TEXT_FIELD_MAX_LENGTH} characters.`,
+    })
+  }
+
+  return errors
+}
+
+function validateDate(date: string): ValidationError[] {
+  const errors: ValidationError[] = []
+
+  if (date.trim() === '') {
+    errors.push({
+      field: 'dueDate',
+      message: 'Due date cannot be empty.',
+    })
+
+    return errors
+  }
+
+  const dueDateRegex = /^\d{4}-\d{2}-\d{2}$/
+  if (!dueDateRegex.test(date)) {
+    errors.push({
+      field: 'dueDate',
+      message: 'Due date must be in the format YYYY-MM-DD.',
     })
   }
 
