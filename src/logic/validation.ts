@@ -1,4 +1,4 @@
-import type { Task } from '@/types/task'
+import { isTaskType, TASK_TYPES, type Task } from '@/types/task'
 
 export type UserInput = Omit<Task, 'uuid' | 'lastUpdated' | 'tombstone'>
 
@@ -11,7 +11,16 @@ const TEXT_FIELD_MAX_LENGTH = 100
 
 export function validateTask(input: UserInput): ValidationError[] {
   const errors: ValidationError[] = []
+
   errors.push(...validateText('title', input.title), ...validateText('subject', input.subject))
+
+  if (!isTaskType(input.type)) {
+    errors.push({
+      field: 'type',
+      message: `Type must be a valid task type (${TASK_TYPES.join(', ')}).`,
+    })
+  }
+
   return errors
 }
 

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { validateTask, type UserInput } from '@/logic/validation'
+import { TASK_TYPES } from '@/types/task'
 
 function makeInput(overrides?: Partial<UserInput>): UserInput {
   const input: UserInput = {
@@ -80,5 +81,18 @@ describe('task', () => {
         message: 'Subject cannot exceed 100 characters.',
       },
     ])
+  })
+
+  it('with invalid type returns a single error for the field "type"', () => {
+    expect(validateTask(makeInput({ type: 'banana' as UserInput['type'] }))).toEqual([
+      {
+        field: 'type',
+        message: `Type must be a valid task type (${TASK_TYPES.join(', ')}).`,
+      },
+    ])
+  })
+
+  it.each(TASK_TYPES)('with valid type "%s" returns an empty array', (type) => {
+    expect(validateTask(makeInput({ type }))).toEqual([])
   })
 })
