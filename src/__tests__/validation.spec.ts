@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { validateTask, type UserInput } from '@/logic/validation'
+import { normalizeInput, validateTask, type UserInput } from '@/logic/validation'
 import { TASK_TYPES } from '@/types/task'
 
 const MALFORMED_DATES = ['friday', '2026-1-5', 'abc2026-11-25', '2026-11-25abc', ' 2026-11-25 ']
@@ -140,5 +140,34 @@ describe('validateTask', () => {
     it('is "2028-02-29" and returns an empty array', () => {
       expect(validateTask(makeInput({ dueDate: '2028-02-29' }))).toEqual([])
     })
+  })
+})
+
+describe('normalizeInput', () => {
+  it('trims title field', () => {
+    expect(normalizeInput(makeInput({ title: '  Homework 1  ' })).title).toBe('Homework 1')
+  })
+
+  it('trims subject field', () => {
+    expect(normalizeInput(makeInput({ subject: '  Chemistry  ' })).subject).toBe('Chemistry')
+  })
+
+  it('does not modify the type field', () => {
+    expect(normalizeInput(makeInput({ type: 'exam' })).type).toBe('exam')
+  })
+
+  it('does not modify the dueDate field', () => {
+    expect(normalizeInput(makeInput({ dueDate: '2026-11-25' })).dueDate).toBe('2026-11-25')
+  })
+
+  it('does not modify the isCompleted field', () => {
+    expect(normalizeInput(makeInput({ isCompleted: true })).isCompleted).toBe(true)
+  })
+
+  it('does not mutate the original input object', () => {
+    const input = makeInput({ title: '  Homework 1  ', subject: '  Chemistry  ' })
+    normalizeInput(input)
+    expect(input.title).toBe('  Homework 1  ')
+    expect(input.subject).toBe('  Chemistry  ')
   })
 })

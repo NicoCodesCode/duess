@@ -93,3 +93,11 @@ function validateDate(date: string): ValidationError | null {
 
   return null
 }
+
+export function normalizeInput(input: UserInput): UserInput {
+  return {
+    ...input,
+    title: input.title.trim(),
+    subject: input.subject.trim(),
+  }
+}
